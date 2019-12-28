@@ -1,0 +1,7 @@
+k_means/Cluster.class
+k_means/Reduce.class
+k_means/Map.class
+k_means/Point.class
+k_means/Reduce$CONVERGE_COUNTER.class
+k_means/KMeans.class
+k_means/Distance.class
