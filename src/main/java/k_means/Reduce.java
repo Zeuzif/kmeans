@@ -23,10 +23,14 @@ public class Reduce extends Reducer<Cluster, Point, IntWritable, Point> {
 	protected void reduce(Cluster cluster, Iterable<Point> values, Context context)
 			throws IOException, InterruptedException {
 		Configuration conf = context.getConfiguration();
-		oldClusters.put(cluster.getIndex(), cluster);
-		Cluster newcluster = new Cluster(cluster.getIndex(), new IntWritable(0));
+		Cluster oldCluster = cluster, newCluster = new Cluster(oldCluster.getIndex(), new IntWritable(0));
+		boolean exsistingCluster = false;
+		if (newClusters.containsKey(oldCluster.getIndex())) {
+			exsistingCluster = true;
+			newCluster = newClusters.get(cluster.getIndex());
+		}
 		Point newcenter = new Point(conf.getInt("iCoordinates", 2));
-		int countValues = 0;
+		int countValues = newCluster.getNumberOfPoints().get();
 		Double temp;
 		for (Point p : values) {
 			for (int i = 0; i < p.getListOfCoordinates().size(); i++) {
@@ -35,12 +39,17 @@ public class Reduce extends Reducer<Cluster, Point, IntWritable, Point> {
 			}
 			countValues++;
 		}
+
 		for (int i = 0; i < newcenter.getListOfCoordinates().size(); i++) {
 			temp = newcenter.getListOfCoordinates().get(i).get() / countValues;
 			newcenter.getListOfCoordinates().get(i).set(temp);
 		}
-		newcluster.setCenter(newcenter);
-		newClusters.put(cluster.getIndex(), newcluster);
+		newCluster.setCenter(newcenter);
+		if(!exsistingCluster) {
+			newClusters.put(cluster.getIndex(), newCluster);
+			oldClusters.put(oldCluster.getIndex(), oldCluster);
+		}
+		
 	}
 
 	@Override
@@ -71,5 +80,12 @@ public class Reduce extends Reducer<Cluster, Point, IntWritable, Point> {
 			context.getCounter(CONVERGE_COUNTER.CONVERGED).increment(1);
 		System.out.println("iconverged centers : " + iConvergedCenters);
 		centerWriter.close();
+	}
+
+	@SuppressWarnings("unused")
+	private void printClusters() {
+		for (IntWritable i : oldClusters.keySet()) {
+			System.out.println(oldClusters.get(i));
+		}
 	}
 }

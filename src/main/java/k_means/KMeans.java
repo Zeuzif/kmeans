@@ -44,7 +44,7 @@ public class KMeans {
 
 		long isConverged = 0;
 		int iterations = 0;
-		while (isConverged != 1 && iterations < 40) {
+		while (isConverged != 1 && iterations < 10) {
 			job = Job.getInstance(conf, "K means itereration");
 			job.setJarByClass(KMeans.class);
 			job.setMapperClass(Map.class);
