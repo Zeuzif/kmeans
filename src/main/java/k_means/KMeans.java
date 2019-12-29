@@ -44,7 +44,7 @@ public class KMeans {
 
 		long isConverged = 0;
 		int iterations = 0;
-		while (isConverged != 1 && iterations < 10) {
+		while (isConverged != 1 && iterations < 40) {
 			job = Job.getInstance(conf, "K means itereration");
 			job.setJarByClass(KMeans.class);
 			job.setMapperClass(Map.class);
@@ -75,7 +75,7 @@ public class KMeans {
 		job.waitForCompletion(true);
 
 		fs.delete(centers.getParent(), true);
-		 System.out.println("Number of iterations\t" + iterations);
+		System.out.println("Number of iterations\t" + iterations);
 	}
 
 	private static void createCenters(int k, Configuration conf, Path centers) throws IOException {
@@ -91,7 +91,6 @@ public class KMeans {
 				listParameters.add(new DoubleWritable(temp));
 			}
 			center = new Point(listParameters);
-			System.out.println(center);
 			centerWriter.append(new IntWritable(i), center);
 			listParameters = new ArrayList<DoubleWritable>();
 		}

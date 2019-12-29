@@ -45,7 +45,6 @@ public class Reduce extends Reducer<Cluster, Point, IntWritable, Point> {
 
 	@Override
 	protected void cleanup(Context context) throws IOException, InterruptedException {
-		System.out.println(newClusters.size() + " et " + oldClusters.size());
 		Configuration conf = context.getConfiguration();
 		Path centersPath = new Path(conf.get("centersFilePath"));
 		SequenceFile.Writer centerWriter = SequenceFile.createWriter(conf, SequenceFile.Writer.file(centersPath),
@@ -70,7 +69,7 @@ public class Reduce extends Reducer<Cluster, Point, IntWritable, Point> {
 		int percentSize = (k * 90) / 100;
 		if (iConvergedCenters >= percentSize || avgValue < threshold)
 			context.getCounter(CONVERGE_COUNTER.CONVERGED).increment(1);
-		System.out.println("converged centers sont : " + iConvergedCenters);
+		System.out.println("iconverged centers : " + iConvergedCenters);
 		centerWriter.close();
 	}
 }
