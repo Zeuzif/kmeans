@@ -1,3 +1,3 @@
 # kmeans
 
-k-meas implementation with apache hadoop
+k-meas implementation apache hadoop
